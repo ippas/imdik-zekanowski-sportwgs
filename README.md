@@ -6,3 +6,6 @@ WGS of Polish sportsmen
 `docker run --rm -d -v $PWD:/data pegi3s/fastqc /data/{}`
 
 2. A report was then generated with multiQC:
+`docker run ...`
+
+Sample list with naming scheme and summed numbers of reads is avaiable (here)[]
