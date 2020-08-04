@@ -8,4 +8,4 @@ WGS of Polish sportsmen
 2. A report was then generated with multiQC:
 `docker run ...`
 
-Sample list with naming scheme and summed numbers of reads is avaiable (here)[]
+Sample list with naming scheme and summed numbers of reads is avaiable [here](), it was created with [this script]()
