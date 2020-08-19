@@ -8,7 +8,7 @@ WGS of Polish sportsmen
 2. A report was then generated with multiQC 1.9:
 `docker run --rm -v $PWD:/data ewels/multiqc:latest multiqc -m fastqc --sample-names /data/analysis/samples_naming.tsv /data -o /data`
 
-Sample list with naming scheme and summed numbers of reads is avaiable [here](), it was created with [this script](sample_naming.R)
+Sample list with naming scheme and summed numbers of reads is avaiable [here](http://149.156.177.112/projects/imdik-zekanowski-sportwgs/analysis/samples_naming.tsv), it was created with [this script](sample_naming.R)
 
 3. Paired fq files were aligned with bwa-mem and piped through the following commands (samtools): samtools fixmate, sort, markdup
 
