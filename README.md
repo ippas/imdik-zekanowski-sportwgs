@@ -18,3 +18,38 @@ to generate file list:
 
 ls fastq/*/*_1.fq*gz | xargs -I {} basename {} | cut -d "_" -f 1-3 > file-list.txt
 ```
+
+slurm script to run bwa-mem (161 alignments parallel)
+
+```
+#!/bin/sh
+#SBATCH --job-name=Bwa_Mem
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=24
+#SBATCH --time=48:00:00
+#SBATCH --partition=plgrid
+#SBATCH --mem=120gb
+#SBATCH --output=BwaMem.%J.out
+#SBATCH --error=BwaMem.%J.err
+#SBATCH --array=1-161
+
+module load plgrid/apps/bwa
+module load plgrid/tools/samtools
+
+#get file and sample name
+file=`cat file-list.txt | head -n $SLURM_ARRAY_TASK_ID | tail -n 1`
+sample=`find ./*/* -name "$file*" | head -1 | cut -d "/" -f 3`
+
+
+#extract read group
+zcat -f fastq/${sample}/${file}_1.fq.gz | head -1 | cut -d ':' -f 3,4 | sed 's/:/\./g' > rg_id_$SLURM_ARRAY_TASK_ID
+RG_ID=`cat rg_id_$SLURM_ARRAY_TASK_ID`
+RG_PU="${RG_ID}.${sample}"
+RG_LB="$sample.library"
+RG_SM="$sample"
+RG_PL="bgi"
+
+
+bwa mem -t 24 -R "@RG\tID:""$RG_ID""\tPU:""$RG_PU""\tPL:${RG_PL}\tLB:""$RG_LB""\tSM:""$RG_SM" Hg38/Homo_sapiens_assembly38.fa fastq/$sample/${file}_1.fq.gz fastq/$sample/${file}_2.fq.gz | samtools fixmate -m -@24 - - | samtools sort -@24 -O bam - | samtools markdup -@24 - bam/$file.bam
+```
+
