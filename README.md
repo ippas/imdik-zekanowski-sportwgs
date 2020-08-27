@@ -53,3 +53,24 @@ RG_PL="bgi"
 bwa mem -t 24 -R "@RG\tID:""$RG_ID""\tPU:""$RG_PU""\tPL:${RG_PL}\tLB:""$RG_LB""\tSM:""$RG_SM" Hg38/Homo_sapiens_assembly38.fa fastq/$sample/${file}_1.fq.gz fastq/$sample/${file}_2.fq.gz | samtools fixmate -m -@24 - - | samtools sort -@24 -O bam - | samtools markdup -@24 - bam/$file.bam
 ```
 
+script to index bam's:
+
+```
+#!/bin/sh
+#SBATCH --job-name=gatk-hc
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=24
+#SBATCH --time=04:00:00
+#SBATCH --partition=plgrid
+#SBATCH --mem=120gb
+#SBATCH --output=bam-index.%J.out
+#SBATCH --error=bam-index.%J.err
+#SBATCH --array=1-161
+
+file=`cat file-list.txt | head -n $SLURM_ARRAY_TASK_ID | tail -n 1`
+
+module load plgrid/tools/samtools
+
+samtools index -@ 24 bam/$file.bam 
+```
