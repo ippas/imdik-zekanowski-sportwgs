@@ -74,3 +74,47 @@ module load plgrid/tools/samtools
 
 samtools index -@ 24 bam/$file.bam 
 ```
+
+4. Some files had more than two fastqs. A script to find these files:
+```
+#!/bin/bash
+
+for var in `ls -d fastq/B*` 
+do
+        file_number=`ls $var/*fq.gz | wc -l`
+        if [ $file_number -gt 2 ]
+        then
+                echo `ls $var/*_1.fq.gz` | xargs -d " " -I {} basename {} | cut -d "_" -f 1-3 > ${var}/bams-to-concat.txt
+        fi
+done
+```
+
+A script to concat the bam files:
+```
+#!/bin/sh
+#SBATCH --job-name=Bwa_Mem
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --time=02:00:00
+#SBATCH --partition=plgrid
+#SBATCH --mem=120gb
+#SBATCH --output=bam-concat.%J.out
+#SBATCH --error=bam-concat.%J.err
+#SBATCH --array=4-49
+
+module load plgrid/tools/gatk/4.1.3.0
+
+file=`ls fastq/*/bams* | head -n $SLURM_ARRAY_TASK_ID | tail -n 1`
+sample=`echo $file | cut -d "/" -f 2`
+
+myfiles=`cat $file | xargs -I {} echo "-I bam/{}.bam"`
+
+gatk GatherBamFiles $myfiles --TMP_DIR $SCRATCH -O bam/${sample}.bam
+```
+
+The rest of the files were single and were renamed with this script:
+```
+```
+
+
+
