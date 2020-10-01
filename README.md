@@ -14,6 +14,6 @@ Sample list with naming scheme and summed numbers of reads is avaiable [here](ht
 
 To generate inputs (example for 3 samples):
 ```
-ls */B3*/*_1.fq.gz | xargs -i bash -c 'BASENAME=$(echo {} | cut -d "/" -f 2,3,4 | cut -d "_" -f 1,2,3); BASENAME2=$(echo $BASENAME | cut -d "/" -f 1); echo $BASENAME $BASENAME2'
+ls */B3*/*_1.fq.gz | xargs -i bash -c 'BASENAME=$(echo {} | cut -d "/" -f 2,3,4 | cut -d "_" -f 1,2,3); BASENAME2=$(echo $BASENAME | cut -d "/" -f 1); echo $BASENAME $BASENAME2' | xargs -n2 bash -c 'echo "{\"germline.genome_or_exome\": \"genome\",\"germline.sample_id\": \"$1\",\"germline.fastqs\": [\"gs://sportsmen-wgs/${0}_1.fq.gz\", \"gs://sportsmen-wgs/${0}_2.fq.gz\"]}">${1}-input.json'
 ```
 
