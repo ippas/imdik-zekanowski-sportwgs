@@ -10,10 +10,6 @@ WGS of Polish sportsmen
 
 Sample list with naming scheme and summed numbers of reads is avaiable [here](http://149.156.177.112/projects/imdik-zekanowski-sportwgs/analysis/samples_naming.tsv), it was created with [this script](sample_naming.R)
 
-3. Each sample was passed through Intelliseq Germline Pipeline (ver 1.7.3) [see wdl here]()
-
-To generate inputs (example for 3 samples):
-```
-ls */B3*/*_1.fq.gz | xargs -i bash -c 'BASENAME=$(echo {} | cut -d "/" -f 2,3,4 | cut -d "_" -f 1,2,3); BASENAME2=$(echo $BASENAME | cut -d "/" -f 1); echo $BASENAME $BASENAME2' | xargs -n2 bash -c 'echo "{\"germline.genome_or_exome\": \"genome\",\"germline.sample_id\": \"$1\",\"germline.fastqs\": [\"gs://sportsmen-wgs/${0}_1.fq.gz\", \"gs://sportsmen-wgs/${0}_2.fq.gz\"]}">${1}-input.json'
-```
-
+3. Each sample was passed through Intelliseq Germline Pipeline (ver 1.7.3) up to the variant calling modules [see wdl here](https://raw.githubusercontent.com/gosborcz/workflows/master/iseq_germline_wgs_1.7.3.wdl).
+Inputs were generated with [this script](generate-inputs.sh)
+ 
