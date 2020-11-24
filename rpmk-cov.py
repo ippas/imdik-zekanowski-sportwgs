@@ -17,10 +17,9 @@ for i in ['001', '002', '003', '004', '005', '006', '007', '008', '009',
         reference_genome='GRCh38',
         force_bgz = True,
         array_elements_required = False).write('gs://hail-data/mts/part'+i+'.mt')
+    mt = hl.read_matrix_table('gs://hail-data/mts/part'+i+'.mt')
 
-        mt = hl.import_matrix_table('gs://hail-data/mts/part'+i+'.mt')
+    mt = mt.filter_rows(hl.is_defined(rpmk[mt.locus]), keep = False)
+    mt = mt.filter_rows(hl.is_defined(cov[mt.locus]), keep = True)
 
-        mt = mt.filter_rows(hl.is_defined(rpmk[mt.locus]), keep = False)
-        mt = mt.filter_rows(hl.is_defined(cov[mt.locus]), keep = True)
-
-        mt.write('gs://hail-data/mts/part'+i+'-rpmk-cov.mt')
+    mt.write('gs://hail-data/mts/part'+i+'-rpmk-cov.mt')
