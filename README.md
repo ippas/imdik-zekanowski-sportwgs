@@ -19,5 +19,5 @@ note: To query workflows run on a given day: `curl -X GET "http://localhost:8383
 
 4. The g.vcf's that were returned from the Intelliseq germline pipeline were thene genotyped according to [this script](https://github.com/ippas/imdik-zekanowski-gts/blob/master/joint_genotyping.md)
 
-5.
+5. Rest of the analysis was performed with Hail 0.2.60 in Google Cloud DataProc.
 
