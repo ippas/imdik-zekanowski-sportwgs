@@ -14,7 +14,7 @@ WGS of Polish sportsmen
 *note: available on io*
 
 3. Each sample was passed through Intelliseq Germline Pipeline (ver 1.8.3) up to the variant calling modules [see wdl here](https://raw.githubusercontent.com/gosborcz/workflows/master/iseq_germline_wgs_1.8.3.wdl).
-Inputs were generated with [this script](preprocessing/generate-inputs.sh). To run input first start cromwell server on port 8383 and then run:
+Inputs were generated with [this script](prepocressing/generate-inputs.sh). To run input first start cromwell server on port 8383 and then run:
 
 `ls inputs/ | xargs -i bash -c 'curl -X POST "http://localhost:8383/api/workflows/v1" -H  "accept: application/json" -H  "Content-Type: multipart/form-data" -F "workflowUrl=https://raw.githubusercontent.com/gosborcz/workflows/master/iseq_germline_wgs_1.7.3.wdl" -F "workflowInputs=@inputs/{};type=application/json" -F "workflowOptions=@options.json;type=application/json"; sleep 60'`
 
