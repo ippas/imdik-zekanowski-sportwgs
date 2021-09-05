@@ -14,16 +14,18 @@ WGS of Polish sportsmen
 *note: available on io*
 
 3. Each sample was passed through Intelliseq Germline Pipeline (ver 1.8.3) up to the variant calling modules [see wdl here](https://raw.githubusercontent.com/gosborcz/workflows/master/iseq_germline_wgs_1.8.3.wdl).
+
 Inputs were generated with [this script](prepocressing/generate-inputs.sh). To run input first start cromwell server on port 8383 and then run:
 
 `ls inputs/ | xargs -i bash -c 'curl -X POST "http://localhost:8383/api/workflows/v1" -H  "accept: application/json" -H  "Content-Type: multipart/form-data" -F "workflowUrl=https://raw.githubusercontent.com/gosborcz/workflows/master/iseq_germline_wgs_1.7.3.wdl" -F "workflowInputs=@inputs/{};type=application/json" -F "workflowOptions=@options.json;type=application/json"; sleep 60'`
 
-note: To query workflows run on a given day: `curl -X GET "http://localhost:8383/api/workflows/v1/query?submission=2020-10-06T00%3A00%3A00.000Z&status=Running" -H  "accept: application/json"`
+*note: To query workflows run on a given day: `curl -X GET "http://localhost:8383/api/workflows/v1/query?submission=2020-10-06T00%3A00%3A00.000Z&status=Running" -H  "accept: application/json"`*
 
-### 2) joint genotyping and annotations (two options) 
+### 2) joint genotyping and annotations
 
-#### START HERE ####
+*note: This needs to be repeated with corrected samples, for now the joint vcf does contain 7 wrong samples*
+*note 2: joint genotyping was performed for both sportsmen only and with GTS - two vcfs are available*
 
-4. The g.vcf's that were returned from the Intelliseq germline pipeline were thene genotyped according to [this script](https://github.com/ippas/imdik-zekanowski-gts/blob/master/joint_genotyping.md) (update link)
+4. The g.vcf's that were returned from the Intelliseq germline pipeline were joint genotyped in intervals according to [this script](https://github.com/ippas/imdik-zekanowski-gts/blob/master/preprocessing/joint_genotyping.md)  
 
 
