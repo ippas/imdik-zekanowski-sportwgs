@@ -1,12 +1,14 @@
 # imdik-zekanowski-sportwgs
 #### WGS of 102 Polish sportsmen
 
-#### *important: please read [important-info.md](preprocessing/important-info.md) before starting to work with this project*
+#### *important: please read [important-info.md](preprocessing/important-info.md) before starting to work with this project. This file also contains info on data location*
 
 ## Methods
 
 ------------- to fill in later ----------
+
 This sections should be a description of preprocessing and analysis ready to be included in the publication
+
 -----------------------------------------
 
 
@@ -42,8 +44,6 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 [rpmk-cov.py](prepocressing/rpmk-cov.py) - vcf was filtered for coverage in Gnomad (90% with coverage > 1) and saved as matrix-tables (mts, Hail format)
 [anno.py](prepocressing/anno.py) - mts were annotated with genes, DANN, clinvar_gene_summary, clinvar_variant_summary
 [join-pca.py](preprocessing/join-pca.py) - PCA was run and a large, joint mt was saved
-
-*note: the above files are stored on cyfronet*
 
 ## Analysis
 Details of analysis
