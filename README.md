@@ -5,8 +5,9 @@
 
 ## Methods
 
--------------- to fill in later ----------
+------------- to fill in later ----------
 This sections should be a description of preprocessing and analysis ready to be included in the publication
+-----------------------------------------
 
 
 ## Preprocessing
@@ -29,7 +30,7 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 
 *note: To query workflows run on a given day: `curl -X GET "http://localhost:8383/api/workflows/v1/query?submission=2020-10-06T00%3A00%3A00.000Z&status=Running" -H  "accept: application/json"`*
 
-### Joint genotyping and annotations
+### Joint genotyping, initial filtering and annotations
 
 *note: This needs to be repeated with corrected samples, for now the joint vcf does contain 7 wrong samples*
 *note 2: joint genotyping was performed for both sportsmen only and with GTS - two vcfs are available*
@@ -38,7 +39,11 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 
 2. Annotations and PCA for sportsmen-only vcf were performed in Hail 0.62 on Google Cloud. The following scripts were run:
 
+[rpmk-cov.py](prepocressing/rpmk-cov.py) - vcf was filtered for coverage in Gnomad (90% with coverage > 1) and saved as matrix-tables (mts, Hail format)
+[anno.py](prepocressing/anno.py) - mts were annotated with genes, DANN, clinvar_gene_summary, clinvar_variant_summary
+[join-pca.py](preprocessing/join-pca.py) - PCA was run and a large, joint mt was saved
 
+*note: the above files are stored on cyfronet*
 
 ## Analysis
 Details of analysis
