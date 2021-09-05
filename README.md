@@ -1,9 +1,17 @@
 # imdik-zekanowski-sportwgs
-WGS of Polish sportsmen
+#### WGS of 102 Polish sportsmen
 
 #### *important: please read [important-info.md](preprocessing/important-info.md) before starting to work with this project*
 
-### 1) PREPROCESSING of WGS data
+## Methods
+
+-------------- to fill in later ----------
+This sections should be a description of preprocessing and analysis ready to be included in the publication
+
+
+## Preprocessing
+
+### WGS preprocessing
 
 1. All samples were checked with fastqc 0.11.9 with this command:
 `docker run --rm -d -v $PWD:/data pegi3s/fastqc /data/{}`
@@ -21,11 +29,16 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 
 *note: To query workflows run on a given day: `curl -X GET "http://localhost:8383/api/workflows/v1/query?submission=2020-10-06T00%3A00%3A00.000Z&status=Running" -H  "accept: application/json"`*
 
-### 2) joint genotyping and annotations
+### Joint genotyping and annotations
 
 *note: This needs to be repeated with corrected samples, for now the joint vcf does contain 7 wrong samples*
 *note 2: joint genotyping was performed for both sportsmen only and with GTS - two vcfs are available*
 
-4. The g.vcf's that were returned from the Intelliseq germline pipeline were joint genotyped in intervals according to [this script](https://github.com/ippas/imdik-zekanowski-gts/blob/master/preprocessing/joint_genotyping.md)  
+1. The g.vcf's that were returned from the Intelliseq germline pipeline were joint genotyped in intervals according to [this script](https://github.com/ippas/imdik-zekanowski-gts/blob/master/preprocessing/joint_genotyping.md)  
+
+2. Annotations and PCA for sportsmen-only vcf were performed in Hail 0.62 on Google Cloud. The following scripts were run:
 
 
+
+## Analysis
+Details of analysis
