@@ -42,10 +42,9 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 2. Annotations and PCA for sportsmen-only vcf were performed in Hail 0.62 on Google Cloud. The following scripts were run:
 
 [rpmk-cov.py](prepocressing/rpmk-cov.py) - vcf was filtered for coverage in Gnomad (90% with coverage > 1) and saved as matrix-tables (mts, Hail format)
-
 [anno.py](prepocressing/anno.py) - mts were annotated with genes, DANN, clinvar_gene_summary, clinvar_variant_summary
-
 [join-pca.py](preprocessing/join-pca.py) - PCA was run and a large, joint mt was saved
 
 ## Analysis
-Details of analysis
+
+Annotations of vcf joint with the WGS project and preliminary analyses were run in Jupyter notebooks in Hail. Preliminary analyses produced no meaningful results. Jupyter notebooks were run on Cyfronet with [this script](preprocessing/python-notebook.slurm). 
