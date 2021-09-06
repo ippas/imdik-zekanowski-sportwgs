@@ -1,4 +1,4 @@
-## CAREFUL sample naming!
+## Sample naming (!)
 
 Fastq sample names have two parts and both form the ID. For example, sample B156 has the following fastqs:
 `DP8400011742BL_L01_579_1.fq.gz  DP8400011742BL_L01_579_2.fq.gz`
