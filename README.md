@@ -48,3 +48,5 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 ## Analysis
 
 Annotations of vcf joint with the WGS project and preliminary analyses were run in Jupyter notebooks in Hail. Preliminary analyses produced no meaningful results. Jupyter notebooks were run on Cyfronet with [this script](preprocessing/python-notebook.slurm). 
+
+Additionally: on request from the collaborators a vcf with genes from mitocarta 3.0 was exported.
