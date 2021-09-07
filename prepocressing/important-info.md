@@ -77,8 +77,4 @@ samtools view -h B523_filtered.bam | grep -v "RG:Z:@DP8400011742BL" | samtools v
 
 samtools view -h B478_filtered.bam | grep -v "RG:Z:@DP8400011738BL" | samtools view -bS -o B478_corrected.bam -s
 ```
-
-
-IMPORTANT - the samples were then not YET subjected to joint genotyping again. Therefore the joint vcf with GTS contains samples with WRONG genotypes.
-
-
+g.vcf files were then recreated for the above files with intelliseq's pipeline
