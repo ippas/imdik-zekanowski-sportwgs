@@ -79,6 +79,6 @@ samtools view -h B478_filtered.bam | grep -v "RG:Z:@DP8400011738BL" | samtools v
 ```
 
 
-IMPORTANT - the samples were then not YET subjected to joint genotyping again (as these genotypes were already in the joint genotyping, but were added to the existing vcf of the cohort). Therefore the joint vcf with GTS contains samples with WRONG genotypes that need to be replaced with correct vcfs (available in this folder)
+IMPORTANT - the samples were then not YET subjected to joint genotyping again. Therefore the joint vcf with GTS contains samples with WRONG genotypes.
 
 
