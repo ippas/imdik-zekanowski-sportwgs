@@ -19,7 +19,7 @@ The original location of each fastq and thus assignment to samples is avaliable 
   - joint vcf with GTS (7 samples are incorrect, part 1 is split into 5 parts)
 
 2. cyfronet (Prometheus):
-  - all bams (five bams were accidentally deleted: B435, B438, B466, B482, B495 and should be recreated from fastq files)
+  - all bams (five bams were accidentally deleted: B466, B482, B495 and should be recreated from fastq files)
   - gvcfs (all)
   - vcfs (all)
   - external-data (gene lists used in the analyses and database of allele frquencies from 900 Polish genomes for reference) 
