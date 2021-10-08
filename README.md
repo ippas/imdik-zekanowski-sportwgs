@@ -45,8 +45,23 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 [anno.py](prepocressing/anno.py) - mts were annotated with genes, DANN, clinvar_gene_summary, clinvar_variant_summary
 [join-pca.py](preprocessing/join-pca.py) - PCA was run and a large, joint mt was saved
 
-## Analysis
+## Analysis (this analysis was run in Hail)
 
-Annotations of vcf joint with the imdik-zekanowski-gts project and preliminary analyses were run in Jupyter notebooks in Hail. Preliminary analyses produced no meaningful results. Jupyter notebooks were run on Cyfronet with [this script](preprocessing/python-notebook.slurm). 
+- joint vcf with the GTS cohort was obtained from the GTS project
+- This vcf was then filtered according to the following criteria:
+
+repeatmasker track (+/- 2 bp from the edges)
+gnomad coverage (90% of samples with DP > 1)
+mean DP > 10 - to keep high quality variants only
+mean GQ > 60 - to keep high quality variants only
+max 3 samples with DP < 3
+max 3 samples with GQ < 30
+
+
+## Side analyses
+
+Annotations of vcf joint with the imdik-zekanowski-gts project and preliminary analyses were run in Jupyter notebooks in Hail. Preliminary analyses produced no meaningful results.
 
 Additionally: on request from the collaborators a vcf with genes from mitocarta 3.0 was exported.
+
+
