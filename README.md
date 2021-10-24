@@ -34,10 +34,7 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 
 ### Joint genotyping, initial filtering and annotations
 
-*note: This needs to be repeated with corrected samples, for now the joint vcf does contain 7 wrong samples*
-*note 2: joint genotyping was performed for both sportsmen only and with GTS - two vcfs are available*
-
-1. The g.vcf's that were returned from the Intelliseq germline pipeline were joint genotyped in intervals according to [this script](https://github.com/ippas/imdik-zekanowski-gts/blob/master/preprocessing/joint_genotyping.md)  
+1. The g.vcf's that were returned from the Intelliseq germline pipeline were joint genotyped in intervals 
 
 2. Annotations and PCA for sportsmen-only vcf were performed in Hail 0.62 on Google Cloud. The following scripts were run:
 
@@ -52,15 +49,15 @@ Inputs were generated with [this script](prepocressing/generate-inputs.sh). To r
 
 repeatmasker track (+/- 2 bp from the edges)
 gnomad coverage (90% of samples with DP > 1)
-mean DP > 10 - to keep high quality variants only
-mean GQ > 60 - to keep high quality variants only
+mean DP > 5 - to keep high quality variants only
+mean GQ > 50 - to keep high quality variants only
 max 3 samples with DP < 3
 max 3 samples with GQ < 30
-
+*note: the last four filters were applied per sequenced group*
 
 ## Side analyses
 
-Annotations of vcf joint with the imdik-zekanowski-gts project and preliminary analyses were run in Jupyter notebooks in Hail. Preliminary analyses produced no meaningful results.
+Annotations of vcf joint with the imdik-zekanowski-gts project and preliminary analyses were run in Jupyter notebooks in Hail. Single-variant analyses produced no meaningful results.
 
 Additionally: on request from the collaborators a vcf with genes from mitocarta 3.0 was exported.
 

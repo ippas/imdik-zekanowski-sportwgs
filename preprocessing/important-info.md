@@ -15,29 +15,20 @@ The original location of each fastq and thus assignment to samples is avaliable 
   - two example bams
   - fastqs
   - fastqc files with multiqc report
-  - all vcfs (7 vcfs are larger as they contain non-variant sites - to correct)
-  - joint vcf with GTS (7 samples are incorrect, part 1 is split into 5 parts)
+  - all vcfs (7 vcfs are larger as they contain non-variant sites)
+  - joint vcf with GTS
 
 2. cyfronet (Prometheus):
-  - all bams (B466, B495 and should be recreated from fastq files)
-  - gvcfs (all)
-  - vcfs (all)
-  - external-data (gene lists used in the analyses and database of allele frquencies from 900 Polish genomes for reference) 
+  - all bams
+  - gvcfs
+  - vcfs
+  - external-data (gene lists used in the analyses and database of allele frequencies from 900 Polish genomes for reference) 
   - hail-mts (intermediate files in hail format, easily exportable as vcfs)
-  - joint-vcf (with 7 incorrect samples)
+  - joint-vcf
   
-## Correction info 
 
-7 bams had to be additionally filtered and vcfs, gvcfs and joint vcfs had to be updated as they included (by mistake) extra reads:
-these are the following samples:
 
-- B522
-- B506
-- B507
-- B508
-- B509
-- B523
-- B478
+#### code used to correct bams that had additional fastq samples by mistake
 
 ```
 # 1. DP8400011742BL_L01_573 <- B506 is contaminated with reads with this in the read group (from B24)
