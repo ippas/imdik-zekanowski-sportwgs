@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ## slurm configuration
-#SBATCH --partition plgrid-testing
+#SBATCH --partition plgrid
 #SBATCH -N 1
-#SBATCH --time 01:00:00
-#SBATCH --mem=20gb
-##SBATCH --begin=2021-02-10T14:30:00
-#SBATCH --ntasks-per-node=5
+#SBATCH --time 07:00:00
+#SBATCH --mem=10gb
+#SBATCH --ntasks-per-node=1
+#SBATCH -c 6
 #SBATCH --job-name jupyter-hail-sport
 #SBATCH --output job-log--%J.txt
  

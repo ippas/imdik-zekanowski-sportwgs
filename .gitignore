@@ -2,7 +2,6 @@
 /data/
 /results/
 /preprocessing/cromwell-66.jar
-/tmp_mateusz/
 
 ########## R.gitignore ##########
 
