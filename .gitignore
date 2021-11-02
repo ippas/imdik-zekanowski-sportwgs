@@ -1,8 +1,12 @@
 /raw/
 /data/
 /results/
-/preprocessing/cromwell-66.jar
 
+/raw
+/data
+/results
+
+/cromwell-executions/
 ########## R.gitignore ##########
 
 # History files
