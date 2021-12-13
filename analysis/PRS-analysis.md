@@ -63,4 +63,37 @@ In the first step to prepare control group, was merged all genotyped samples for
 zcat 1kg-samples-merged.vcf.gz | grep -vP '^##' | awk 'NR == 1 || NR % 10000 == 0' | sed 's/^#//' > output.merged
 
 # Prepare data to reading in Rstudio
+
 cat output.merged | grep -v "\./\.\:\.\:\." | grep -v "\./\." | sed 's/0\/0/0|0/g; s/0\/1/0|1/g; s/1\/0/1|0/g; s/1\/1/1|1/g' > tmp.output.merged
+
+Some display math:
+```math
+e^{i\pi} + 1 = 0
+```
+and some inline math, $`a^2 + b^2 = c^2`$.
+```
+$\bar x$   
+\newcommand*\conj[1]{\bar{#1}}
+\newcommand*\mean[1]{\bar{#1}}
+#or for a string   
+$\overline {xyzabc}$   
+\documentclass{standalone}
+
+\usepackage{amsmath}
+
+\begin{document}
+  $\begin{array}{r}
+    a+b+c\\
+    a+b^3+c\\
+    a+\overline{b}+c\\
+    a+\overline{b}^3+c\\
+    a+\bar{b}+c\\
+    a+\bar{b}^3+c\\
+    a+\overline{b^3}+c\\
+    a+\bar{b^3}+c\\
+    a+b+c
+  \end{array}$
+\end{document}
+```
+
+<img src="https://render.githubusercontent.com/render/math?math=\tilde x">
