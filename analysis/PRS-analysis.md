@@ -17,6 +17,7 @@ cat data/external-data/sporstmen-pheno.csv |
      sed '1d; s/"//g' | 
      awk '{print $4"\t"$2"\tsporstmen\tnoene\tsportsman"}')  | 
 sed '1i\\sample\tpop\tsuper_pop\tgender\tgroup' > data/prs-data/1kg-sportsmen-pheno.tsv
+
 ```
 In the first step to prepare the control group, was merged all genotyped samples for the athlete and next connected with samples from 1000 genomes inside 1kg.rsid.chr.vcf.gz, to run the script which executes this use command which [uses files from](https://github.com/ippas/imdik-zekanowski-sportwgs/tree/master/preprocessing), which have two tasks first merge all sportsmen genotype, and second merge them with 1kg.rsid.vcf.gz:
 
@@ -24,17 +25,42 @@ In the first step to prepare the control group, was merged all genotyped samples
 sbatch preprocessing/samples-merged/samples-merged.sh
 ```
 
-The next step was to execute using prs-control-pca.ipynb which used python version 3.7.7 and 2.64 version of [hail package](https://hail.is/). Inside script merging all samples and preparing a metadata file was read and reduced the size of data by drawing rows from vcf file with a probability equal to 0.001 for each line, as a result of that was left about 80 thousand lines, also the value "inf" which are in sportsmen samples in the field QUAL was replaced to 50. To the data was added metadata information about belonging to the population, for 45 genotyped from 1kg.rsid.chr.vcf.gz had no information, so genotyped with missing metadata was removed. On prepare sample was run principal component analysis (PCA) with [Hardy-Weinberg normalized genotype](https://hail.is/docs/0.2/methods/genetics.html#hail.methods.hwe_normalized_pca). The PC1 and PC2 plot was drawn and based on them filtered genotypes that are near to a group of athletes. 
+The next step was to execute using [prs-control-pca.ipynb]() which used python version 3.7.7 and 0.2.79 version of [hail package](https://hail.is/). Inside script merging all samples and preparing a metadata file was read and reduced the size of data by drawing rows from vcf file with a probability equal to 0.001 for each line, as a result of that was left about 80 thousand lines, also the value "inf" which are in sportsmen samples in the field QUAL was replaced to 50. To the data was added metadata information about belonging to the population, for 44 genotyped from 1kg.rsid.chr.vcf.gz had no information, so genotyped with a missing population was removed. On prepare sample was run principal component analysis (PCA) with  [Hardy-Weinberg normalized genotype](https://hail.is/docs/0.2/methods/genetics.html#hail.methods.hwe_normalized_pca). The PC1 and PC2 plot was drawn and filtered genotypes based on median absolute deviation (MAD), where chose sample <img src="https://render.githubusercontent.com/render/math?math=\pm6MAD"> distance from median sportsmen for PC1 and PC2 respectively. After filtering the 7 AMR genotypes were captured so they were removed before the next PCA
 
-Figure. 1. The plot of PC1 and PC2 before filtering
-Figure. 2. The plot of PC1 and PC2 after filtering
+ <img src="https://latex.codecogs.com/svg.latex?\Large&space;MAD=median(|X_{i}-\tilde{X}|)">
+ <img src="https://render.githubusercontent.com/render/math?math=\tilde{X}=median(X)">
 
-On filtering data again was performed PCA with HW-normalized, and draw a plot but this time for PC2 and PC3, because PC1 and PC2 separated sportsmen from other genotyped so assessment of group control was impossible. In the drawing plot again was doing filtering on genotyped nearly of athletes population.
+Before calculating models of prs using polygenic, for sportsmen-control.vcf.gz create file .idx.db using file:
 
-Figure 3. The plot of PC2 and PC3 berfore filtering.
-Figure 4. The plot of PC2 and PC3 after filtering
+```
+sbatch preprocessing/polygenic/polygenic.sh
+```
+
+     Figure. 1. The plot of PC1 and PC2 before filtering
+     Figure. 2. The plot of PC1 and PC2 after filtering
+
+On filtering data again was performed PCA with HW-normalized, and draw a plot but this time for PC2 and PC3, because PC1 and PC2 separated sportsmen from other genotyped so assessment of group control was impossible. In the drawing plot again was done filtering, but now takes genotyped in <img src="https://render.githubusercontent.com/render/math?math=\pm5MAD"> distance from a median of PC2 and PC3.
+
+     Figure 3. The plot of PC2 and PC3 berfore filtering.
+     Figure 4. The plot of PC2 and PC3 after filtering
+
+In the final remain, 100 sportsmen and 98 European genotyped. Was Prepare metadata file sportsmen-control-pheno.tsv and also vcf file sportsmen-control.vcf.bgz and sportsmen-control.vcf.bgz.tbi with sportsmen and control genotyped, and then change end name in terminal from .bgz to .gz and also changet it in .tbi file using command:
+
+```
+mv data/prs-data/sportsmen-control.vcf.bgz data/prs-data/sportsmen-control.vcf.gz &
+mv data/prs-data/sportsmen-control.vcf.bgz.tbi data/prs-data/sportsmen-control.vcf.gz.tbi 
+```
+
+Before calculating models of prs using [polygenic](https://github.com/intelliseq/polygenic), for sportsmen-control.vcf.gz create file .idx.db using file:
+
+```
+sbatch preprocessing/polygenic/polygenic.sh
+```
+
+### Analysis prs with polygenic
 
 
+### Analysis MAF in PLINK
 
 
 ##### testing command
@@ -96,4 +122,5 @@ $\overline {xyzabc}$
 \end{document}
 ```
 
-<img src="https://render.githubusercontent.com/render/math?math=\tilde x">
+<img src="https://render.githubusercontent.com/render/math?math=\tilde X">
+<img src="https://render.githubusercontent.com/render/math?math=\pm ">
