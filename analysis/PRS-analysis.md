@@ -51,7 +51,7 @@ mv data/prs-data/sportsmen-control.vcf.bgz data/prs-data/sportsmen-control.vcf.g
 mv data/prs-data/sportsmen-control.vcf.bgz.tbi data/prs-data/sportsmen-control.vcf.gz.tbi 
 ```
 
-Before calculating models of prs using [polygenic](https://github.com/intelliseq/polygenic), for sportsmen-control.vcf.gz create file .idx.db [using file](https://github.com/ippas/imdik-zekanowski-sportwgs/tree/master/preprocessing/polygenic):
+Before calculating models of prs using [polygenic](https://github.com/intelliseq/polygenic), for sportsmen-control.vcf.gz create file .idx.db [using files](https://github.com/ippas/imdik-zekanowski-sportwgs/tree/master/preprocessing/polygenic):
 
 ```
 sbatch preprocessing/polygenic/polygenic.sh
