@@ -58,7 +58,13 @@ Download file with info about features from UK biobank usic comand:
 
 For these features prepare an input file for cromwell using the command:
 ```
-command to create input file
+zcat data/prs-data/phenotype_manifest.tsv.gz | \
+  cut -f2-4 | \
+  grep -v "[]:/?#@\!\$&'()*+,;=%[]" | \
+  grep -v "|" | \
+  sed 's/\t/\",\"/g; s/^/["/; s/$/"]/; 1d' | \
+  tr "\n" "," | \
+  sed 's/^/[/; s/,$/]\n}\n/; s/^/{\n\t"prepare_models.array_model_info"\: /' > preprocessing/prepare-models/inputs-prepare-models.json
 ```
 
 To generate models from UK biobank prepare files needed in cromwell and run a script using the command:
