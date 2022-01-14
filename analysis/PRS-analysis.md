@@ -25,16 +25,10 @@ In the first step to prepare the control group, was merged all genotyped samples
 sbatch preprocessing/samples-merged/samples-merged.sh
 ```
 
-The next step was to execute using [prs-control-pca.ipynb]() which used python version 3.7.7 and 0.2.79 version of [hail package](https://hail.is/). Inside script merging all samples and preparing a metadata file was read and reduced the size of data by drawing rows from vcf file with a probability equal to 0.001 for each line, as a result of that was left about 80 thousand lines, also the value "inf" which are in sportsmen samples in the field QUAL was replaced to 50. To the data was added metadata information about belonging to the population, for 44 genotyped from 1kg.rsid.chr.vcf.gz had no information, so genotyped with a missing population was removed. On prepare sample was run principal component analysis (PCA) with  [Hardy-Weinberg normalized genotype](https://hail.is/docs/0.2/methods/genetics.html#hail.methods.hwe_normalized_pca). The PC1 and PC2 plot was drawn and filtered genotypes based on median absolute deviation (MAD), where chose sample <img src="https://render.githubusercontent.com/render/math?math=\pm6MAD"> distance from median sportsmen for PC1 and PC2 respectively. After filtering the 7 AMR genotypes were captured so they were removed before the next PCA
+The next step was to execute using [prs-control-pca.ipynb]() which used python version 3.7.7 and 0.2.79 version of [hail package](https://hail.is/). Inside script merging all samples and preparing a metadata file was read and reduced the size of data by drawing rows from vcf file with a probability equal to 0.001 for each line, as a result of that was left about 80 thousand lines, also the value "inf" which are in sportsmen samples in the field QUAL was replaced to 50. To the data was added metadata information about belonging to the population, for 44 genotyped from 1kg.rsid.chr.vcf.gz had no information, so genotyped with a missing population was removed. On prepare sample was run principal component analysis (PCA) with  [Hardy-Weinberg normalized genotype](https://hail.is/docs/0.2/methods/genetics.html#hail.methods.hwe_normalized_pca). The PC1 and PC2 plot was drawn and filtered genotypes based on median absolute deviation (MAD), where chose sample <img src="https://render.githubusercontent.com/render/math?math=\pm6MAD"> distance from median sportsmen for PC1 and PC2 respectively, for two samples of sportsmen (B502 and B506) were outliers so were not in this range and not included in further analysis. After filtering the 7 AMR genotypes were captured so they were removed before the next PCA
 
  <img src="https://latex.codecogs.com/svg.latex?\Large&space;MAD=median(|X_{i}-\tilde{X}|)">
  <img src="https://render.githubusercontent.com/render/math?math=\tilde{X}=median(X)">
-
-Before calculating models of prs using polygenic, for sportsmen-control.vcf.gz create file .idx.db using file:
-
-```
-sbatch preprocessing/polygenic/polygenic.sh
-```
 
      Figure. 1. The plot of PC1 and PC2 before filtering
      Figure. 2. The plot of PC1 and PC2 after filtering
@@ -54,10 +48,32 @@ mv data/prs-data/sportsmen-control.vcf.bgz.tbi data/prs-data/sportsmen-control.v
 Before calculating models of prs using [polygenic](https://github.com/intelliseq/polygenic), for sportsmen-control.vcf.gz create file .idx.db [using files](https://github.com/ippas/imdik-zekanowski-sportwgs/tree/master/preprocessing/polygenic):
 
 ```
-sbatch preprocessing/polygenic/polygenic.sh
+sbatch preprocessing/polygenic/polygenicmaker.sh
+```
+####Prepare models to prs analysis
+Download file with info about features from UK biobank usic comand:
+```
+  wget -P data/prs-data/ https://pan-ukb-us-east-1.s3.amazonaws.com/sumstats_release/phenotype_manifest.tsv.bgz && mv data/prs-data/phenotype_manifest.tsv.bgz data/prs-data/phenotype_manifest.tsv.gz 
+```
+
+For these features prepare an input file for cromwell using the command:
+```
+zcat data/prs-data/phenotype_manifest.tsv.gz | \
+  cut -f2-4 | \
+  grep -v "[]:/?#@\!\$&'()*+,;=%[]" | \
+  grep -v "|" | \
+  sed 's/\t/\",\"/g; s/^/["/; s/$/"]/; 1d' | \
+  tr "\n" "," | \
+  sed 's/^/[/; s/,$/]\n}\n/; s/^/{\n\t"prepare_models.array_model_info"\: /' > preprocessing/prepare-models/inputs-prepare-models.json
+```
+
+To generate models from UK biobank prepare files needed in cromwell and run a script using the command:
+```
+  command with 
 ```
 
 ### Analysis prs with polygenic
+
 
 
 ### Analysis MAF in PLINK
