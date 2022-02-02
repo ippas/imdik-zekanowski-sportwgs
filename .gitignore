@@ -8,6 +8,7 @@
 venv/
 
 *.crc
+job-log--*
 
 /cromwell-executions/
 ########## R.gitignore ##########
