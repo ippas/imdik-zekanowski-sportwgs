@@ -23,7 +23,7 @@ This sections should be a description of preprocessing and analysis ready to be 
 
 ### Analyses
 
-1. [WGS analysis (burden test etc.)](WGS-analysis.md)
+1. [WGS analysis (burden test etc.)](analysis/WGS-analysis.md)
 2. [PRS analysis](analysis/PRS-analysis.md)
 
 
