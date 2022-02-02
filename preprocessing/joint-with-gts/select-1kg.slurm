@@ -16,4 +16,4 @@ module load plgrid/tools/java8
  
 source venv/bin/activate
 
-python genotype-sportsmen.py
+python select-1kg.py

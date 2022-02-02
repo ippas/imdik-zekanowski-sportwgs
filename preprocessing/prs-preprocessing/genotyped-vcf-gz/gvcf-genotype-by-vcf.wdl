@@ -98,10 +98,6 @@ task gvcf_genotype_by_vcf {
     File genotyped_vcf_gz = "${sample_id}_genotyped-by-vcf.vcf.gz"
     File genotyped_vcf_gz_tbi = "${sample_id}_genotyped-by-vcf.vcf.gz.tbi"
 
-#    File stdout_log = stdout()
-#    File stderr_log = stderr()
-#    File bco = "bco.json"
-
   }
 
 }

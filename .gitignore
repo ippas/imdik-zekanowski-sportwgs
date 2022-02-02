@@ -5,6 +5,9 @@
 /raw
 /data
 /results
+venv/
+
+*.crc
 
 /cromwell-executions/
 ########## R.gitignore ##########

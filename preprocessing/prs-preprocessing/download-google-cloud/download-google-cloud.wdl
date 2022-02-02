@@ -40,9 +40,9 @@ task download_genebass {
 task download_subset_sample_meta {
   command <<<
     echo '123'
-    source /net/archive/groups/plggneuromol/matzieb/./venv/bin/activate
+#    source /net/archive/groups/plggneuromol/matzieb/./venv/bin/activate
 
-    gsutil cp -r gs://gcp-public-data--gnomad/release/3.1.2/ht/genomes/gnomad.genomes.v3.1.2.hgdp_1kg_subset_sample_meta.ht /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/data/external-data
+#    gsutil cp -r gs://gcp-public-data--gnomad/release/3.1.2/ht/genomes/gnomad.genomes.v3.1.2.hgdp_1kg_subset_sample_meta.ht /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/data/external-data
   >>>
 }
 
