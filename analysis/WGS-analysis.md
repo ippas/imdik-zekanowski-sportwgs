@@ -1,35 +1,28 @@
-# imdik-zekanowski-sportwgs
-#### WGS of 102 Polish sportsmen
+### Joint genotyping, initial filtering and annotations
 
-## Methods
+1. The g.vcf's that were returned from the Intelliseq germline pipeline were joint genotyped with Hail 0.2.64 with samples from the GTS project and 1000Genomes project
 
----------------------------------
+2. Quality filtering was applied (each group had to pass the filters):
 
-This sections should be a description of preprocessing and analysis ready to be included in the publication (to fill in later)
+repeatmasker track (+/- 2 bp from the edges)
+gnomad coverage (90% of samples with DP > 1)
+mean DP > 5 - to keep high quality variants only
+mean GQ > 50 - to keep high quality variants only
+max 3 samples with DP < 3
+max 3 samples with GQ < 30
 
------------------------------------------
-
-
-## Preprocessing
-
-### WGS preprocessing
-
-1. All samples were checked with fastqc 0.11.9 with this command:
-
-2. A report was then generated with multiQC 1.9
-*note: available on io*
-
-3. Each sample was passed through Intelliseq Germline Pipeline (ver 1.8.3) up to the variant calling modules [see wdl here](https://raw.githubusercontent.com/gosborcz/workflows/master/iseq_germline_wgs_1.8.3.wdl).
+3. MatrixTable was annotated with vep, gnomAD and CADD
 
 ### Analyses
 
-1. [WGS analysis (burden test etc.)](WGS-analysis.md)
-2. [PRS analysis](analysis/PRS-analysis.md)
+1. Burden tests for various genes and gene lists
+
+*note : Single-variant analyses were also performed but produced no meaningful results.
+
+Additionally: on request from the collaborators a vcf with genes from mitocarta 3.0 was exported.
 
 
-*notes:
-#### Sample naming (!)
-
+## Sample naming (!)
 
 Fastq sample names have two parts and both form the ID. For example, sample B156 has the following fastqs:
 `DP8400011742BL_L01_579_1.fq.gz  DP8400011742BL_L01_579_2.fq.gz`
@@ -46,7 +39,7 @@ The original location of each fastq and thus assignment to samples is avaliable 
   - two example bams
   - fastqs
   - fastqc files with multiqc report
-  - all vcfs
+  - all vcfs (7 vcfs are larger as they contain non-variant sites)
   - joint vcf with GTS
 
 2. cyfronet (Prometheus):
@@ -56,4 +49,3 @@ The original location of each fastq and thus assignment to samples is avaliable 
   - external-data (gene lists used in the analyses and database of allele frequencies from 900 Polish genomes for reference) 
   - hail-mts (intermediate files in hail format, easily exportable as vcfs)
   - joint-vcf
-
