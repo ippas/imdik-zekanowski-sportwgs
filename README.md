@@ -40,7 +40,7 @@ DP8400011021BR_L01_579_2.fq.clean.fq.gz  FP100001057TR_L01_579_2.fq.clean.fq.gz`
 
 The original location of each fastq and thus assignment to samples is avaliable in the `md5.txt` file in the `data/fastq` folder on io. This file does not contain the B539 sample as it was sequenced separately and has its own md5.txt file.
 
-## Data localisation + info (missing samples, mistakec etc): 
+## Data localisation + info
 
 1. io:
   - two example bams
