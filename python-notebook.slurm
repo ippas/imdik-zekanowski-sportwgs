@@ -1,13 +1,14 @@
 #!/bin/bash
 
 ## slurm configuration
-#SBATCH --partition plgrid
+#SBATCH --partition plgrid-now
 #SBATCH -N 1
-#SBATCH --time 07:00:00
-#SBATCH --mem=10gb
+#SBATCH -C localfs
+#SBATCH --time 12:00:00
+#SBATCH --mem=30gb
 #SBATCH --ntasks-per-node=1
-#SBATCH -c 6
-#SBATCH --job-name jupyter-hail-sport
+#SBATCH -c 20
+#SBATCH --job-name jupyter-hail
 #SBATCH --output job-log--%J.txt
  
 ## get tunneling info
@@ -29,10 +30,7 @@ echo -e "
     ------------------------------------------------------------------
     "
 
-module load plgrid/apps/spark/2.4.3 
-module load plgrid/tools/python/3.6.5
- 
-start_spark_cluster
+module load plgrid/tools/java8
+source /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/preprocessing/joint-with-gts/venv/bin/activate
 
-## start an ipcluster instance and launch jupyter server
 jupyter-notebook --no-browser --port=$ipnport --ip=$ipnip

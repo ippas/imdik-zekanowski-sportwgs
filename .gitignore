@@ -1,10 +1,15 @@
 /raw/
 /data/
 /results/
+.vscode/
 
 /raw
 /data
 /results
+venv/
+
+*.crc
+job-log--*
 
 /cromwell-executions/
 ########## R.gitignore ##########
