@@ -1,4 +1,0 @@
-{
-	"prepare_models.array_model_info": [["30600","both_sexes",""],["30610","both_sexes",""]],
-	"prepare_models.prepare_model.docker_image": "marpiech/polygenictk:2.0.46"
-}
