@@ -15,7 +15,7 @@ Before choosing the control population prepare a table with metadata about sport
      awk '{print $0"\t1kg"}' && 
 cat data/external-data/sporstmen-pheno.csv | 
      sed '1d; s/"//g' | 
-     awk '{print $4"\t"$2"\tsporstmen\tnoene\tsportsman"}')  | 
+     awk '{print $4"\t"$2"\tsporstmen\tnone\tsportsman"}')  | 
 sed '1i\\sample\tpop\tsuper_pop\tgender\tgroup' > data/prs-data/1kg-sportsmen-pheno.tsv
 
 ```
