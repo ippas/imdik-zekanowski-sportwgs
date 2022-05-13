@@ -3,9 +3,7 @@
 
 ## Methods
 
----------------------------------
-
-This sections should be a description of preprocessing and analysis ready to be included in the publication (to fill in later)
+-----------------------------------------
 
 -----------------------------------------
 
