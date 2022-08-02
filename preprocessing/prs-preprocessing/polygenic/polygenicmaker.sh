@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -A plgsportwgs2
 #SBATCH -p plgrid
-#SBATCH --time=12:00:00
+#SBATCH --time=48:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=mateuszzieba97@gmail.com
-#SBATCH --mem=3GB
+#SBATCH --mem=4GB
 #SBATCH --cpus-per-task=1
 #SBATCH -C localfs
 #SBATCH --output=/net/archive/groups/plggneuromol/matzieb/slurm-log/%j.out
@@ -14,7 +14,7 @@ module load plgrid/tools/bcftools/1.9
 module load plgrid/tools/singularity/stable
 
 # variable with singularity image with polygenic package
-singularity_image=/net/archive/groups/plggneuromol/singularity-images/ubuntu_polygenic.sif
+singularity_image=/net/archive/groups/plggneuromol/singularity-images/polygenictk_2.1.5.sif
 
 # create tabix file for gnomad-sites-freqAF-v3.1.1.vcf.gz
 tabix -p vcf /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/data/prs-data/gnomad-sites-freqAF-v3.1.1.vcf.gz
@@ -32,7 +32,7 @@ singularity exec \
    --bind /net/archive/groups/plggneuromol/ \
   $singularity_image \
     polygenicmaker vcf-index \
-      --vcf /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/data/prs-data/sportsmen-control.vcf.gz
+      --vcf /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/data/prs-data/sportsmen-control-polish-control.vcf.gz
 
 
 
