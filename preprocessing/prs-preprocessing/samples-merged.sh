@@ -19,15 +19,15 @@ module load plgrid/tools/java11/11
 bcftools merge $(ls data/genotyped-vcf-gz/*.vcf.gz) | bgzip -c > data/prs-data/tmp/sportsmen-merged.vcf.gz
 
 # create tabix file for merged genotypes
-tabix -p vcf /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/data/prs-data/tmp/sportsmen-merged.vcf.gz
+tabix -p vcf /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/data/prs-data/sportsmen-merged.vcf.gz
 
 
 # mergind sportsmen-merged.vcf.gz with 1kg.rsid.chr.vcf.gz
 bcftools merge $(ls data/prs-data/1kg.rsid.chr.vcf.gz \
-                    data/prs-data/tmp/sportsmen-merged.vcf.gz) | 
-      bgzip  > data/prs-data/tmp/1kg-sportsmen-merged.vcf.gz
+                    data/prs-data/sportsmen-merged.vcf.gz) | 
+      bgzip  > data/prs-data/1kg-sportsmen-merged.vcf.gz
 
 # create tabix file for 1kg-sportsmen-merged.vcf.gz
-tabix -p vcf data/prs-data/tmp/1kg-sportsmen-merged.vcf.gz
+tabix -p vcf data/prs-data/1kg-sportsmen-merged.vcf.gz
 
 
