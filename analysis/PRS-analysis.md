@@ -1,4 +1,3 @@
-
 # PRS documentation
 
 Preprocessing on Cyfronet on Prometheus.
@@ -86,9 +85,9 @@ Prepare metadata to contain sportsmen and 1kg samples:
 (cat data/prs-data/integrated_call_samples_v3.20130502.ALL.panel | 
      sed '1d' | 
      awk '{print $0"\t1kg"}' && 
-cat data/external-data/sporstmen-pheno.csv | 
+cat data/external-data/sportsmen-pheno.csv | 
      sed '1d; s/"//g' | 
-     awk '{print $4"\t"$2"\tsporstmen\tnone\tsportsman"}')  | 
+     awk '{print $4"\t"$2"\tsportsmen\tnone\tsportsman"}')  | 
 sed '1i\\sample\tpop\tsuper_pop\tgender\tgroup' > data/prs-data/1kg-sportsmen-pheno.tsv
 ```
 
