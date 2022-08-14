@@ -5,9 +5,9 @@
 #SBATCH -N 1
 #SBATCH -C localfs
 #SBATCH --time 12:00:00
-#SBATCH --mem=30gb
+#SBATCH --mem=10gb
 #SBATCH --ntasks-per-node=1
-#SBATCH -c 20
+#SBATCH -c 5
 #SBATCH --job-name jupyter-hail
 #SBATCH --output job-log--%J.txt
  
