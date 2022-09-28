@@ -4,10 +4,10 @@
 #SBATCH --partition plgrid-now
 #SBATCH -N 1
 #SBATCH -C localfs
-#SBATCH --time 12:00:00
-#SBATCH --mem=10gb
+#SBATCH --time 06:00:00
+#SBATCH --mem=30gb
 #SBATCH --ntasks-per-node=1
-#SBATCH -c 5
+#SBATCH -c 20
 #SBATCH --job-name jupyter-hail
 #SBATCH --output job-log--%J.txt
  
@@ -30,7 +30,12 @@ echo -e "
     ------------------------------------------------------------------
     "
 
-module load plgrid/tools/java8
+# start spark
+module load plgrid/apps/spark/3.1.2
+export SPARK_LOCAL_DIRS=$SCRATCH_LOCAL/
+export SPARK_WORKER_DIR=$SCRATCH_LOCAL/work
+start_spark_cluster
 source /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/preprocessing/joint-with-gts/venv/bin/activate
 
-jupyter-notebook --no-browser --port=$ipnport --ip=$ipnip
+
+jupyter-lab --no-browser --port=$ipnport --ip=$ipnip
