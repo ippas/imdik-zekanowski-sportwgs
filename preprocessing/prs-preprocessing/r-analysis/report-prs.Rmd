@@ -1,0 +1,38 @@
+---
+title: "Report sportsmen PRS"
+output: html_document
+params: 
+  df_stat: df_stat
+  df_number_group: df_number_group
+  df_info: df_info
+  plot: plot
+  height_plot: height_plot
+  
+---
+
+```{r setup, echo = FALSE, include=FALSE}
+require(rmarkdown)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r iris, echo=FALSE, include=FALSE}
+df_info <- params$df_info
+df_number_group <- params$df_number_group
+path <- params$path
+height_plot <- params$height_plot
+```
+
+```{r, echo = FALSE, fig.width=unit(21, "cm"), fig.height=unit(height_plot, "cm")}
+paged_table(df_info)
+paged_table(df_number_group)
+params$plot
+
+```
+
+```{r, echo=FALSE}
+
+df_stat <- params$df_stat
+
+paged_table(df_stat)
+```
+
