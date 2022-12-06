@@ -1,0 +1,71 @@
+---
+title: "report-dimensional-analysis"
+output: html_document
+params:
+  cor_matrix: cor_matrix
+  summary_pca: summary_pca
+  skew_biplot: skew_biplot
+  rotation_pca: rotation_pca
+  pc_plot: pc_plot
+  tsne_plot: tsne_plot
+  table_matrix: table_matrix
+  pc_stat: pc_stat
+  pop_cluster_table: pop_cluster_table
+  lda_plot: lda_plot
+  lda_summary: lda_summary
+  partimat_plot: partimat_plot
+  t.test_prediction: t.test_predction
+---
+
+```{r setup, echo = FALSE, include=FALSE}
+require(rmarkdown)
+require(htmltools)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+```{r, echo=FALSE}
+paged_table(params$cor_matrix)
+paged_table(params$summary_pca)
+```
+
+```{r, echo=FALSE, fig.width = 12}
+params$skew_biplot
+```
+
+```{r, echo=FALSE, fig.height=8, fig.width = 12}
+params$pc_plot
+```
+
+```{r, echo=FALSE}
+paged_table(params$rotation_pca)
+paged_table(params$pc_stat)
+```
+
+```{r, echo=FALSE,  fig.height=10, fig.width = 12}
+params$tsne_plot
+```
+
+```{r, echo=FALSE}
+params$pop_cluster_table
+```
+
+```{r, echo=FALSE}
+paged_table(params$lda_summary)
+```
+
+```{r, echo=FALSE,  fig.height=10, fig.width = 12}
+params$lda_plot
+```
+
+```{r, echo=FALSE}
+params$partimat_plot
+```
+
+```{r, echo=FALSE}
+params$t.test_prediction
+```
+
+
