@@ -16,7 +16,7 @@ control_group <- "weights"
 stat_threshold <- 0.01
 
 prs_results_with_sport %>%
-  filter(p.value_variants == "1e-08") %>%
+  # filter(p.value_variants == "1e-08") %>%
   mutate(p.value_variants = as.character(p.value_variants)) %>%
   # create column with group
   mutate(group = ifelse(sport == experiment_group | sport == control_group, sport, group)) %>%
@@ -30,18 +30,18 @@ prs_statistic_preprocessing(prs_swim_weights) %>%
   # add to result info about field and category
   add_biobank_info() %>% 
   # filter model which variants have 1e-08
-  filter(p.value_variants == "1e-08") %>% 
+  filter(p.value_variants == "1e-08") %>%
   # filter by type_category
-  # filter(type_category == "277_Origin_Categories") %>%
+  filter(type_category == "277_Origin_Categories" | is.na(type_category)) %>%
   # filter model by n_cases_EUR 
   filter_n_cases(n_cases_EUR = 2000) %>% 
   # filter model by shapiro test
   filter(shapiro.test_swim > 0.05,
          shapiro.test_weights > 0.05) %>%
   mutate(FDR_category = p.adjust(t.test, method = "fdr")) %>%
-  filter(t.test < stat_threshold) %>%
-  filter(category_id %in% c(100091, 100080, 2000, 100071, 100006, 100078, 100013, 100081, 17518, 3000)) %>% 
-  filter(category_id %in% c(100091, 100071, 100006, 100078)) %>% 
+  filter(t.test < stat_threshold) %>% 
+  filter(category_id %in% c(100091, 100080, 2000, 100071, 100006, 100078, 100013, 100081, 17518, 3000, "pan_biobank_created")) %>% 
+  filter(category_id %in% c(100091, 100071, 100006, 100078, "pan_biobank_created")) %>% 
   # add prs results with information for each sample for model
   add_samples_results(., prs_samples_results = prs_results_with_sport) %>% 
   mutate(sport = ifelse(is.na(sport), group, sport)) %>% 

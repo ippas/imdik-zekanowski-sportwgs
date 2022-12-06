@@ -301,7 +301,10 @@ add_biobank_info <- function(results_preprocessing) {
     mutate(category_id = ifelse(!is.na(category_id.x), category_id.x, category_id.y)) %>%
     select(-c(category_id.x, category_id.y)) %>%
     unique() %>%
-    left_join(., type_categories_df_biobank, by = "category_id") -> results_biobank_category
+    left_join(., type_categories_df_biobank, by = "category_id") %>%
+    mutate(category_id = as.character(category_id)) %>% 
+    mutate(category_id = ifelse(is.na(category_id), "pan_biobank_created", category_id)) %>%
+    mutate(category_description = ifelse(category_id == "pan_biobank_created", "pan_biobank_created", category_description)) -> results_biobank_category
   
   return(results_biobank_category)
   
