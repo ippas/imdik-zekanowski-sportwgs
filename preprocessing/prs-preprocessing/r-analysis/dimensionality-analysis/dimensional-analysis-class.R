@@ -3,34 +3,36 @@ install.packages("furrr")
 require(R6)
 require(furrr)
 require(yardstick)
+require(GGally)
 
-# prepare data to PCA and UMAP analysis
-rbind(df_model_1, df_model_2, df_model_3) %>% 
-  filter(p.value_variants == "1e-08") %>% 
-  filter(t.test < 0.01) %>%
-  add_samples_results(., prs_samples_results = prs_results_with_sport) %>%
-  filter(super_pop == "sportsmen") %>%
-  select(sample, pop, super_pop, gender, group, sport, age, n, model, prs_score) %>% 
-  unique() %>%  
-  spread(model, prs_score) -> filtered_to_dimensional_analysis
-  
-# create class to dimensionality analysis
+###########################################
+# create class to dimensionality analysis #
+###########################################
 DimensionalityAnalysis <- R6Class(
   "DimensionalityAnalysisPRS",
   
   public = list(
     df_models = NULL,
     df_metadata_sportsmen = NULL,
+    filter_corr_models_res = NULL,
     pca_results = NULL,
     pc_statistics_res = NULL,
+    
     df_prepare_to_lda = NULL,
+    lda_results = NULL,
     lda_predict = NULL,
     lda_summary_res = NULL,
     lda_statistics_res = NULL,
+    lda_slope = NULL,
+    lda_intercept = NULL,
+    lda_classification_plot_res = NULL,
     
-    skew_biplot_res = NULL,
+    skew_plot_res = NULL,
+    biplot_res = NULL,
     pca_plot_res = NULL,
-    lda_plots_res = NULL,
+    conf_mat_plot_res = NULL,
+    lda_hist_res = NULL,
+    roc_curve_res = NULL,
     type_statistics = NULL,
     p.value_analysis = NULL,
     
@@ -45,7 +47,7 @@ DimensionalityAnalysis <- R6Class(
         self$p.value_analysis <- NA
         return(cat("P.value from t.test execute on phenotype"))
       } else if(ncol(data) == (2 + 8)) {
-        self$type_statistics <- "model_lda"
+        # self$type_statistics <- "model_lda"
 
         self$df_models <- data
         self$df_metadata_sportsmen <- data %>% .[, c(1:8)]
@@ -59,8 +61,9 @@ DimensionalityAnalysis <- R6Class(
         self$lda_analysis()
         self$lda_summary()
         self$lda_statistics()
+        self$lda_slope_intercept()
         
-        self$type_statistics <- "model_lda"
+        # self$type_statistics <- "model_lda"
         
         return(cat("LDA analysis is execute on results from two models"))
       }
@@ -69,18 +72,16 @@ DimensionalityAnalysis <- R6Class(
       self$df_metadata_sportsmen <- data %>% .[, c(1:8)]
       
       # calculate correlation between models and filter similar models by chose first
-      filter_corr <- self$filter_corr_models()
-       
-      rownames(filter_corr) <- filter_corr$sample
+      self$filter_corr_models() 
       
-      # calculate pca on filtered data by correaltaion
-      prs_models_pca <- prcomp(filter_corr[,-c(1:8)], center = TRUE, scale. = TRUE) -> pca_results
+      # calculate pca on filtered data by correlation
+      self$pca_analysis()
 
-      self$pca_results <- pca_results
+      # self$pc_statistics() -> pc_stat
+      self$pc_statistics()
 
-      self$pc_statistics() -> pc_stat
-
-      pc_stat %>%
+      # pc_stat %>%
+      self$pc_statistics_res %>%
         top_n(-2) %>%
         filter(t.test < 0.01) %>%
         .[,1] -> pc_to_lda
@@ -97,7 +98,7 @@ DimensionalityAnalysis <- R6Class(
       }
 
 
-      pca_results$x %>%
+      self$pca_results$x %>%
         as.data.frame() %>%
         rownames_to_column(var = "sample") %>%
         left_join(self$df_metadata_sportsmen, ., by = "sample") %>%
@@ -107,12 +108,15 @@ DimensionalityAnalysis <- R6Class(
       self$df_prepare_to_lda <- df_prepare_to_lda
 
 
-      # self$skew_biplot()
-      # self$pca_plot()
+      self$skew_plot()
+      self$biplot()
+      self$pca_plot()
       self$lda_analysis()
-      # self$lda_plots()
       self$lda_summary()
       self$lda_statistics()
+      self$conf_mat_plot()
+      self$lda_hist()
+      self$roc_curve()
 
     },
     
@@ -141,23 +145,31 @@ DimensionalityAnalysis <- R6Class(
         as.data.frame() %>%
         .[, 1] %>% as.character() -> models_to_remove
       
+      
       self$df_models %>%
         as.data.frame() %>%
-        select(-models_to_remove) -> df_models_corr_filt
+        select(-c(models_to_remove)) -> df_models_corr_filt
+      
+      rownames(df_models_corr_filt) <- df_models_corr_filt$sample
+      
+      self$filter_corr_models_res <- df_models_corr_filt
       
       return(df_models_corr_filt)
     },
     
+    # calculate results for pca
     pca_analysis = function() {
-      prs_models_pca <- prcomp(self$filter_corr_models()[,-c(1:8)],
+      prs_models_pca <- prcomp(self$filter_corr_models_res[,-c(1:8)],
                                center = TRUE,
                                scale. = TRUE) -> pca_results
+      
+      self$pca_results <- pca_results
       
       return(pca_results)
     },
     
-    # function to create skew and biplots
-    skew_biplot = function() {
+    # function to create skew plot
+    skew_plot = function(){
       pr_var <- self$pca_results$sdev ^ 2
       pve <- pr_var / sum(pr_var)
       
@@ -170,7 +182,13 @@ DimensionalityAnalysis <- R6Class(
         ylab("Proportion of Variance Explained") +
         coord_cartesian(ylim = c(0, 1)) -> skew_plot
       
-      # create biplot
+      self$skew_plot_res <- skew_plot
+      
+      return(skew_plot)
+    },
+    
+    # function to create biplot
+    biplot = function(){
       autoplot(
         self$pca_results,
         data = self$df_models,
@@ -179,22 +197,22 @@ DimensionalityAnalysis <- R6Class(
         loadings.label = T
       ) -> biplot
       
-      wrap_plots(skew_plot + biplot) -> skew_biplot
+      self$biplot_res <- biplot
       
-      self$skew_biplot_res <- skew_biplot
-      
-      return(skew_biplot)
+      return(biplot)
     },
     
     # function to create plot for fist five PC
     pca_plot = function() {
+      number_col <- self$pca_results$x %>% ncol %>% {ifelse(. >= 5, 5 + 8, . + 8)}
+      
       self$pca_results$x %>%
         as.data.frame() %>%
         rownames_to_column(var = "sample") %>%
         left_join(self$df_metadata_sportsmen, ., by = "sample") %>%
         ggpairs(
           .,
-          columns = c(9:13),
+          columns = c(9:number_col),
           aes(colour = pop),
           progress = FALSE,
           upper = list(continuous = "density", combo = "facetdensity"),
@@ -207,7 +225,7 @@ DimensionalityAnalysis <- R6Class(
       return(pca_plot)
     },
     
-    # function to calculate statistics inside each PC
+    # function to calculate t.test for each PC
     pc_statistics = function() {
       self$pca_results$x %>%
         as.data.frame() %>%
@@ -234,36 +252,46 @@ DimensionalityAnalysis <- R6Class(
       
       predict(lda_results, self$df_prepare_to_lda) -> lda_predict
       
+      self$lda_results <- lda_results
+      
       self$lda_predict <- lda_predict
     },
     
-    # function to visualize lda results
-    lda_plots = function() {
-      
-      # create plot for confusion matrix
-      self$df_prepare_to_lda %>% 
-        mutate(prediction = self$lda_predict$class) %>% 
+    # fucntion to create plot of confusion matrix
+    conf_mat_plot = function(){
+      self$df_prepare_to_lda %>%
+        mutate(prediction = self$lda_predict$class) %>%
         conf_mat(truth = pop, estimate = prediction) %>%
         autoplot(type = "heatmap") -> conf_mat_plot
-      
-      # create histogram on each group from lda
+
+      self$conf_mat_plot_res <- conf_mat_plot
+
+      return(conf_mat_plot)
+    },
+
+    # function to create histogram from results of LDA
+    lda_hist = function(){
       data.frame(pop = self$df_prepare_to_lda$pop, probability = self$lda_predict$x[,1]) %>%
         ggplot(aes(x = probability)) +
-        geom_histogram(aes(y = ..density..)) +
-        facet_grid(pop ~ .) -> lda_histogram
-      
-      # create plot with roc curve
+        geom_histogram(aes(y = ..density..), bins = 20) +
+        facet_grid(pop ~ .) -> lda_hist
+
+      self$lda_hist_res <- lda_hist
+
+      return(lda_hist)
+    },
+
+    # function to create ROC curve
+    roc_curve = function(){
       self$df_prepare_to_lda %>%
         cbind(self$lda_predict$posterior) %>%
         mutate(prediction = self$lda_predict$class) %>%
-        roc_curve(truth = pop, endurance) %>%
-        autoplot() -> roc_plot
-
-      wrap_plots(conf_mat_plot, lda_histogram, roc_plot, ncol = 2) -> lda_plots
+        yardstick::roc_curve(truth = pop, endurance) %>%
+        autoplot() -> roc_curve
       
-      self$lda_plots_res <- lda_plots
+      self$roc_curve_res <- roc_curve
 
-      return(lda_plots)
+      return(roc_curve)
     },
     
     # calculate summary of lda analysis
@@ -279,6 +307,7 @@ DimensionalityAnalysis <- R6Class(
       return(lda_summary)
     },
     
+    # calculate t.test for lda analysis
     lda_statistics = function(){
       data.frame(pop = self$df_prepare_to_lda$pop, prediction = self$lda_predict$x[, 1])  %>% {
         t.test(.[.$pop == "speed", 2], .[.$pop == "endurance", 2], var.eaqual = T)
@@ -290,43 +319,79 @@ DimensionalityAnalysis <- R6Class(
       self$p.value_analysis <-  t.test_prediction_lda %>% .[[3]]
       
       return(t.test_prediction_lda)
-    }
+    },
+    
+    # function to calculate slope and intercept for lda analysis
+    lda_slope_intercept = function(){
+      self$df_prepare_to_lda %>% 
+        filter(pop == "speed") %>% .[, c(2,3)] -> x1
+      
+      self$df_prepare_to_lda %>%
+        filter(pop == "endurance") %>% .[, c(2,3)] -> x2
+      
+      n1 <- nrow(x1)
+      n2 <- nrow(x2)
+      n <- n1 + n2
+      
+      x <- rbind(x1, x2)
+      y <- c(rep("speed", n1), rep("endurance", n2))
+      
+      # Plot data
+      ggplot(data.frame(x1=x[,1], x2=x[,2], y=y), aes(x=x1, y=x2, color=as.factor(y))) +
+        geom_point()
+      
+      # Calculate pi_hat_1 and pi_hat_2
+      pi_hat_1 <- n1 / n
+      pi_hat_2 <- n2 / n
+      
+      # Calculate mu_hat_1 and mu_hat_2
+      mu_hat_1 <- colMeans(x1)
+      mu_hat_2 <- colMeans(x2)
+      
+      # Calculate cov_hat_1 and cov_hat_2
+      cov_hat_1 <- cov(x1)
+      cov_hat_2 <- cov(x2)
+      
+      # Calculate cov_hat
+      cov_hat <- (cov_hat_1 + cov_hat_2) / 2
+      
+      cov_inv <- solve(cov_hat)
+      
+      # Calculate slope and intercept
+      slope_vec <- cov_inv %*% (mu_hat_1 - mu_hat_2)
+      slope <- -slope_vec[1] / slope_vec[2]
+      intercept_partial <- log(pi_hat_2) - log(pi_hat_1) + 0.5 * t(mu_hat_1) %*% cov_inv %*% mu_hat_1 - 0.5 * t(mu_hat_2) %*% cov_inv %*% mu_hat_2
+      intercept <- intercept_partial / slope_vec[2]
+      
+      self$lda_slope <- slope
+      self$lda_intercept <- intercept
+    },
+    
+    # function to create classification plot after 
+    lda_classification_plot = function(){
+      self$df_prepare_to_lda %>%
+        mutate(label = ifelse(pop == "speed", "s", "e")) %>% 
+        mutate(predict = lda_predict$class) %>% 
+        mutate(color = ifelse(pop == predict, "black", "red"))  %>% 
+        mutate(color = as.factor(color)) %>%
+        ggplot(aes(x = PC1, y = PC4)) +
+        geom_text(aes(label = label, color = color)) +
+        scale_color_identity() +
+        geom_abline(slope = slope, intercept = intercept) +
+        labs(title = "Classification sportsmen to group via LDA") + 
+        theme(plot.title = element_text(size = 18)) -> lda_plot
+        
+      self$lda_classification_plot_res <- lda_plot
+      
+      return(lda_plot)
+    } 
   )
 )
 
 
-# test R6class with map
-permutate_dimensionality_table %>%
-  mutate(n_models = map(rand_data, ~(ncol(.x) - 8))) %>% 
-  unnest(n_models) %>% 
-  mutate(dimensional_analysis = map(rand_data, ~{DimensionalityAnalysis$new(.x)})) %>%
-  mutate(tmp = map(dimensional_analysis, ~{.x$p.value_analysis})) %>% unnest(tmp) 
-  select(number, PC, t.test) %>% as.data.frame() %>% filter(number == 9)
-
-
-
-# test each function in R6 class
-test_dimensionality_class <- DimensionalityAnalysis$new(filtered_to_dimensional_analysis)
-
-test_dimensionality_class$execute_analysis()
-test_dimensionality_class$lda_summary_res
-test_dimensionality_class$df_models
-
-test_dimensionality_class$correlation_models()
-test_dimensionality_class$filter_corr_models()
-test_dimensionality_class$pca_analysis() %>% summary()
-test_dimensionality_class$skew_biplot()
-test_dimensionality_class$pca_plot()
-test_dimensionality_class$df_prepare_to_lda
-test_dimensionality_class$lda_analysis()
-test_dimensionality_class$lda_predict
-test_dimensionality_class$lda_plots()
-test_dimensionality_class$lda_summary()
-test_dimensionality_class$lda_statistics()  %>% .[[3]]
-
-
-
-# prepare function for filter prs data --> only to permuate statistics
+########################################################################
+# prepare function for filter prs data --> only to permuate statistics #
+########################################################################
 filter_prs_data <- function(data, n_cases_EUR = 2000, shapiro_threshold = 0.05) {
   data %>%
     colnames %>%
@@ -348,8 +413,9 @@ filter_prs_data <- function(data, n_cases_EUR = 2000, shapiro_threshold = 0.05) 
   return(filter_data)
 }
 
-
-
+####################################
+# function for prepare random data #
+####################################
 prepare_ranodom_data <- function(data){
   
   sportsmen_metadata %>%
@@ -416,7 +482,7 @@ prepare_ranodom_data <- function(data){
     filter_prs_data(shapiro_threshold = 0.05) -> df3
   
   
-  rbind(df1, df2, df3) %>% # filtered_to_dimensional_rand
+  rbind(df1, df2, df3) %>% 
     filter(t.test < 0.01) %>%
     add_samples_results(., prs_samples_results = prs_results_rand) %>%
     filter(super_pop == "sportsmen") %>%
@@ -427,5 +493,4 @@ prepare_ranodom_data <- function(data){
     relocate(c(pop, super_pop, gender, group, sport, age, n), .after = sample) -> filtered_to_dimensional_rand
   
   return(filtered_to_dimensional_rand)
-  # return(df1)
 }
