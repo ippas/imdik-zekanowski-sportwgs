@@ -129,7 +129,12 @@ output_path <- paste0(getwd(), '/results/reports-prs/', experiment_group, "-", c
 ########################
 # histplot and boxplot #
 ########################
+
+find_similar_models(df_top_endurance_speed)
+
 df_top_endurance_speed %>% 
+  # remove similar models on basis correlation
+  filter(model %nin% find_similar_models(.)) %>% 
   mutate(model2 = model) %>%
   group_by(model2, category_description) %>%
   nest() %>% 

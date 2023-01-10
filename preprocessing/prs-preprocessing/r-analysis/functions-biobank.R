@@ -5,6 +5,9 @@
 # This code is available for load packages and 
 # prepare function to analysis results of prs
 
+# create negate of %in%
+`%nin%` = Negate(`%in%`)
+
 # prepare function to install and load package
 install_load <- function (vector)  {   
   
@@ -718,6 +721,33 @@ get_fields_sub_category_biobank <- function(url) {
     }
 }
 
+
+find_similar_models <- function(data, cor_threshold = 0.98){
+  data %>% 
+    filter(super_pop == "sportsmen") %>% 
+    select(c(sample, model, prs_score)) %>% 
+    spread(model, prs_score) %>% 
+    column_to_rownames(var = "sample") %>% 
+    cor() %>% 
+    as.table() %>%
+    as.data.frame() %>%
+    set_names(c("group_1", "group_2", "cor")) %>%
+    mutate(cor = abs(cor)) %>%
+    filter(cor > cor_threshold) %>%
+    mutate(equals = ifelse(group_1 == group_2, T, F)) %>%
+    filter(equals == F) %>%
+    mutate(paired = map2_chr(group_1, group_2, ~ str_flatten(sort(c(
+      .x, .y
+    ))))) %>%
+    group_by(paired) %>%
+    filter(row_number() == 1) %>%
+    .[, 1] %>%
+    as.data.frame() %>%
+    .[, 1] %>% 
+    as.character() -> similar_models
+  
+  return(similar_models)
+}
 
 
 # get_fields_sub_category_biobank("https://biobank.ndph.ox.ac.uk/showcase/label.cgi?id=1")

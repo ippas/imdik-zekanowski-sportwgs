@@ -1,6 +1,4 @@
-install.packages("vcfR")
 
-require(vcfR)
 
 #################
 # read vcf file #

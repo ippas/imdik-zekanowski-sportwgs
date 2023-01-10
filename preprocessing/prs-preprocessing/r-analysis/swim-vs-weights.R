@@ -127,6 +127,9 @@ output_path <- paste0(getwd(), '/results/reports-prs/', experiment_group, "-", c
 # histplot and boxplot #
 ########################
 df_top_swim_weights %>% 
+  # remove similar models on basis correlation
+  filter(model %nin% find_similar_models(.)) %>%
+  select(model) %>% unique()
   mutate(model2 = model) %>%
   group_by(model2, category_description) %>%
   nest() %>% 

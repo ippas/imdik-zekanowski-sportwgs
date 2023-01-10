@@ -1,5 +1,10 @@
 install.packages("furrr")
+install.packages("plotROC")
+install.packages("vcfR")
 
+require(vcfR)
+require(plotROC)
+require(yardstick)
 require(R6)
 require(furrr)
 require(yardstick)

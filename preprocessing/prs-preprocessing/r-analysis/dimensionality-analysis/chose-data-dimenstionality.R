@@ -2,10 +2,6 @@
 ## Stuff I have to do
 ## mateuszzieba97@gmail.com - Apr 2022
 #############################################################
-install.packages("plotROC")
-
-require(plotROC)
-require(yardstick)
 
 ###############################################################
 # require R6 class to dimmenstionality analysis scores of PRS #
