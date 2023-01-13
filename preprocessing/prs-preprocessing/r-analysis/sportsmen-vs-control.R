@@ -101,10 +101,11 @@ prs_statistic_preprocessing(prs_sportsmen_control) %>%
   filter(t.test_polish < 0.1) %>% 
   mutate(FDR = p.adjust(t.test_control, method = "fdr")) %>%
   add_biobank_info() %>%  
-  # filter(type_category == "277_Origin_Categories")  %>% 
-  filter(FDR < 0.05) %>% 
+  filter(type_category == "287_Origin_Categories")  %>% 
+  # filter(FDR < 0.05) %>% 
+  filter(t.test_control < 0.01) %>%
   filter(category_id %in% c(100091, 100080, 2000, 100071, 100006, 100078, 100013, 100081, 17518, 3000)) %>%
-  filter(category_id %in% c(100071, 100006, 100078, 2000)) %>% 
+  filter(category_id %in% c(100071, 100006, 100078, 2000)) %>%
   add_samples_results(., prs_samples_results = prs_results_with_sport) -> df_top_sportsmen_control
  
 
@@ -121,13 +122,15 @@ palette_group <-
 # histplot and boxplot #
 ########################
 df_top_sportsmen_control %>% 
+  # remove similar models on basis correlation
+  filter(model %nin% find_similar_models(.)) %>%
   mutate(model2 = model) %>%
   group_by(model2, category_description) %>%
   nest() %>% 
   mutate(graph_labels = map(data, ~ graph_labels(
     .x,
-    columns_name = c("model", "FDR", "prs_midle"),
-    prefix = "FDR",
+    columns_name = c("model", "t.test_control", "prs_midle"),
+    prefix = "p",
     digits = 7
   ))) %>% 
   mutate(stat_signif_df = map(
@@ -136,8 +139,8 @@ df_top_sportsmen_control %>%
       y_position = .x$prs_score,
       xmin = 1,
       xmax = 2,
-      test_value = .x$FDR,
-      prefix = "FDR = ",
+      test_value = .x$t.test_control,
+      prefix = "p = ",
       digits = 7
     )
   )) %>% 
@@ -211,21 +214,23 @@ wrap_plots(to_hist_box$category_wrap_title, ncol = 1) + coord_fixed() +
 #########################
 experiment_group <- "sportsman"
 control_group <- "control"
-stat_threshold <- 0.05
+stat_threshold <- 0.01
 
 df_top_sportsmen_control %>% 
+  # remove similar models on basis correlation
+  filter(model %nin% find_similar_models(.)) %>%
   filter(group %in% c(experiment_group, control_group)) %>% 
   select(-c(sport, age, n)) %>% unique() %>% 
   model_summary_prs() -> df_stat
 
 number_group(df_top_sportsmen_control) -> df_number_group
 
-cbind( c("comparison", "p.value variants", "n cases EUR", "threshold shapiro.test", "threshold FDR"),
+cbind( c("comparison", "p.value variants", "n cases EUR", "threshold shapiro.test", "threshold p.value"),
        c(paste(experiment_group, "vs", control_group), "1e-08", "more than 2000", "> 0.05", stat_threshold)) %>% 
   as.data.frame() %>%
   set_colnames(c("description", "value")) -> df_info
 
-output_path <- paste0(getwd(), '/analysis/reports-prs/', experiment_group, "-", control_group, "-hist-box-fdr.", stat_threshold, ".html", sep = "")
+output_path <- paste0(getwd(), '/analysis/reports-prs/', experiment_group, "-", control_group, "-hist-box-p.", stat_threshold, ".html", sep = "")
 
 rmarkdown::render(input = "preprocessing/prs-preprocessing/r-analysis/report-prs.Rmd", 
                   output_file = output_path,

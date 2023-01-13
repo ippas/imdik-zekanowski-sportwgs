@@ -30,14 +30,14 @@ prs_statistic_preprocessing(prs_endurance_speed) %>%
   # add to result info about field and category
   add_biobank_info() %>%
   # filter model which variants have 1e-08
-  filter(p.value_variants == "1e-08") %>%
+  filter(p.value_variants == "1e-08") %>% 
   # filter by type_category
   filter(type_category == "287_Origin_Categories" | is.na(type_category)) %>% 
   # filter model by n_cases_EUR 
-  filter_n_cases(n_cases_EUR = 2000) %>% 
+  filter_n_cases(n_cases_EUR = 2000) %>%  
   # filter model by shapiro test
   filter(shapiro.test_endurance > 0.05,
-         shapiro.test_speed > 0.05) %>%
+         shapiro.test_speed > 0.05) %>% 
   group_by(category_description) %>%
   nest() %>%
   mutate(FDR_category = map(data, ~ p.adjust(.x$t.test, method = "fdr"))) %>%
@@ -105,7 +105,9 @@ wrap_plots(endurance_speed_to_plot$plot) +
 #########################
 # 4. create html report #
 #########################
- df_top_endurance_speed %>% 
+df_top_endurance_speed %>%
+  # remove similar models on basis correlation
+  filter(model %nin% find_similar_models(.)) %>% 
   filter(group %in% c(experiment_group, control_group)) %>%
   select(-c(sport, age, n)) %>% unique() %>%
   model_summary_prs() -> df_stat
@@ -115,7 +117,7 @@ number_group(df_top_endurance_speed) -> df_number_group
 cbind( c("comparison", "p.value variants", "n cases EUR", "threshold shapiro.test", "threshold t.test"),
        c(paste(experiment_group, "vs", control_group), "1e-08", "more than 2000", "> 0.05", stat_threshold)) %>% 
   as.data.frame() %>%
-  set_colnames(c("description", "value"))-> df_info
+  set_colnames(c("description", "value")) -> df_info
 
 output_path <- paste0(getwd(), '/results/reports-prs/', experiment_group, "-", control_group, "-fdr-0.25.html", sep = "")
 

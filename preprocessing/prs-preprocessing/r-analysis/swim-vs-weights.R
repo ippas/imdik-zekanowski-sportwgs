@@ -101,6 +101,8 @@ wrap_plots(swim_weighs_to_plot$plot) +
 # 4. create html report #
 #########################
 df_top_swim_weights %>% 
+  # remove similar models on basis correlation
+  filter(model %nin% find_similar_models(.)) %>%
   filter(group %in% c(experiment_group, control_group)) %>%
   select(-c(sport, age, n)) %>% unique() %>%
   model_summary_prs() -> df_stat
@@ -129,7 +131,6 @@ output_path <- paste0(getwd(), '/results/reports-prs/', experiment_group, "-", c
 df_top_swim_weights %>% 
   # remove similar models on basis correlation
   filter(model %nin% find_similar_models(.)) %>%
-  select(model) %>% unique()
   mutate(model2 = model) %>%
   group_by(model2, category_description) %>%
   nest() %>% 
