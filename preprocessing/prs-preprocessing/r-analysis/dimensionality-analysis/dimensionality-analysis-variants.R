@@ -184,6 +184,7 @@ output_file <- paste0(getwd(), "/analysis/reports-prs/report-dimensional-analysi
 rmarkdown::render(input = "preprocessing/prs-preprocessing/r-analysis/dimensionality-analysis/report-dimensional-analysis.Rmd", 
                   output_file = output_file,
                   params = list(dim_class = dim_prs,
+                                better_permutate = better_permutate,
                                 pca_variants_plot = pca_variants_plot,
                                 pca_variants_stat = pca_variants_stat))
 

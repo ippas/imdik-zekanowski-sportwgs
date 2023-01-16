@@ -3,6 +3,7 @@ title: "report-dimensional-analysis"
 output: html_document
 params:
   dim_class: dim_class
+  better_permutate: better_permutate
   pca_variants_plot: pca_variants_plot
   pca_variants_stat: pca_variants_stat
 ---
@@ -54,6 +55,9 @@ params$dim_class$conf_mat_plot_res +
 ```{r, echo=FALSE}
 params$dim_class$lda_statistics_res
 ```
+
+
+The permutation was executed 1000 times. After calculating statistics on random data, emerged `r toString(params$better_permutate)` test which are better than the original data. 
 
 ### Result of dimensionality analysis on variants from significant models.
 

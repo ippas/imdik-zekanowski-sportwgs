@@ -196,5 +196,6 @@ dimensionality_stat_preprocessing %>%
 dimensionality_stat_preprocessing %>% 
   select(-c(rand_data, dimensional_analysis)) %>% 
   as.data.frame() %>%
-  filter(p.value < dim_prs$lda_statistics_res[3])
+  filter(p.value < dim_prs$lda_statistics_res[3]) %>%
+  nrow -> better_permutate
 
