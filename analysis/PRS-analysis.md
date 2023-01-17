@@ -330,7 +330,7 @@ cat data/prs-models/*tsv |
   sed  -e '$a}' > preprocessing/prs-preprocessing/polygenic/inputs-polygenic.json 
 ```
 
-Command to execute PRS analysis for all samples inside `sportsmen-control-polish-control.vcf.gz`:
+The calculation PRS score for prepared phenotypes was executes by [polygenic v2.2.4](https://github.com/intelliseq/polygenic) python package prepared by Intelliseq company. Command to execute PRS analysis for all samples inside `sportsmen-control-polish-control.vcf.gz`:
 ```
 sbatch preprocessing/prs-preprocessing/polygenic/polygenic.sh \
   --inputs preprocessing/prs-preprocessing/polygenic/inputs-polygenic.json
