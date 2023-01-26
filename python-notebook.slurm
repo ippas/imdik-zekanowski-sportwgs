@@ -1,13 +1,12 @@
 #!/bin/bash
 
 ## slurm configuration
-#SBATCH --partition plgrid-now
+#SBATCH --partition plgrid
 #SBATCH -N 1
-#SBATCH -C localfs
-#SBATCH --time 06:00:00
+#SBATCH --time 04:00:00
 #SBATCH --mem=30gb
 #SBATCH --ntasks-per-node=1
-#SBATCH -c 20
+#SBATCH -c 12
 #SBATCH --job-name jupyter-hail
 #SBATCH --output job-log--%J.txt
  
@@ -21,7 +20,7 @@ user=$USER
 echo -e "
     Copy/Paste this in your local terminal to ssh tunnel with remote
     -----------------------------------------------------------------
-    ssh -o ServerAliveInterval=300 -N -L $ipnport:$ipnip:$ipnport ${user}@pro.cyfronet.pl
+    ssh -o ServerAliveInterval=300 -N -L $ipnport:$ipnip:$ipnport ares
     -----------------------------------------------------------------
  
     Then open a browser on your local machine to the following address
@@ -30,12 +29,10 @@ echo -e "
     ------------------------------------------------------------------
     "
 
-# start spark
-module load plgrid/apps/spark/3.1.2
-export SPARK_LOCAL_DIRS=$SCRATCH_LOCAL/
-export SPARK_WORKER_DIR=$SCRATCH_LOCAL/work
-start_spark_cluster
-source /net/archive/groups/plggneuromol/imdik-zekanowski-sportwgs/preprocessing/joint-with-gts/venv/bin/activate
+module add java/11.0.2
+module load python/3.10.4-gcccore-11.3.0
 
+# source python virtual environment
+source venv-hail-0.2.105/bin/activate
 
-jupyter-lab --no-browser --port=$ipnport --ip=$ipnip
+jupyter lab --no-browser --port=$ipnport --ip=$ipnip

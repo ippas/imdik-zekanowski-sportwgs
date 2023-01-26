@@ -2,6 +2,7 @@
 /data/
 /results/
 .vscode/
+venv-hail-0.2.105/
 
 /raw
 /data
