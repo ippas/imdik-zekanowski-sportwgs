@@ -2,8 +2,9 @@
 /data/
 /results/
 .vscode/
-venv-hail-0.2.105/
+venv-hail-0.2.*/
 
+*.csv 
 /raw
 /data
 /results
