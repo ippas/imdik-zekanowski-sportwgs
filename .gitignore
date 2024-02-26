@@ -3,6 +3,8 @@
 /results/
 .vscode/
 venv-hail-0.2.*/
+analysis/variant-analysis-and-exports/sportsmen-info-sport.tsv
+
 
 *.csv 
 /raw
